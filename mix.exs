@@ -70,7 +70,7 @@ defmodule Recommender.MixProject do
       # left out (its libtorch bindings need `cmake`, absent here).
       {:exla, "~> 0.11"},
       {:axon, "~> 0.7"},
-      {:bumblebee, github: "elixir-nx/bumblebee", ref: "main"},
+      {:bumblebee, github: "V-Sekai-fire/bumblebee", branch: "main/main"},
       {:npy, "~> 0.1.2"},
       {:unpickler, "~> 0.1"},
       {:unzip, "~> 0.13"},

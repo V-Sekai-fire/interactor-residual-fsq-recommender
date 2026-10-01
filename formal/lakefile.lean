@@ -12,7 +12,7 @@ open Lake DSL
 package «recommender-model» where
 
 require «plausible-witness-dag» from git
-  "https://github.com/fire/plausible-witness-dag" @ "main"
+  "https://github.com/V-Sekai-fire/plausible-witness-dag" @ "main/main"
 
 @[default_target] lean_lib RecommenderModel where
 
