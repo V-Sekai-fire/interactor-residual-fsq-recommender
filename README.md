@@ -1,36 +1,20 @@
-# residual-fsq-recommender
+# interactor-residual-fsq-recommender
 
-Generative next-item recommender (FuXi-Linear linear-attention) over residual FSQ semantic
-IDs, in Elixir on [Nx](https://github.com/elixir-nx/nx)/EXLA.
+A generative next-item recommender over residual FSQ semantic IDs, written in Elixir on Nx and EXLA.
 
-## Serving
+## What it is for
 
-`Serve` runs the trained model over a catalog (`token_id_list`, index = item index) and returns the
-top-k next-item indices:
+Given the items a session has seen, a linear-attention sequence model predicts the next ones, decoding semantic IDs under a trie constraint so every answer is an item in the catalog. Training runs on a GPU host over licence-gated corpora, and the semantic-ID codec is certified in Lean under `formal/`.
 
-```elixir
-# defn_params from a trained checkpoint (Recommender.Adapters.NpyCheckpointSource +
-# Recommender.Core.FuxiLinearInferenceParams.build_defn_params/2)
-serve = Recommender.Adapters.Serve.new(defn_params, token_id_list)
-{:ok, item_indices} = Recommender.Adapters.Serve.recommend(serve, [0, 3], 5)
+## Build and run
+
+```sh
+mix deps.get
+mix test
 ```
 
-Recommendation needs a trained checkpoint; `Serve.from_init/2` builds a random-weight engine that
-exercises the full pipeline for smoke tests. Training runs on a GPU host
-(`Recommender.Adapters.AxonTrainer` + `Recommender.Core.Training`) over gate-clean corpora
-(`Recommender.Core.Trajectories.LicenseGate`: CC0 / MIT / Apache-2.0 / CC-BY, English/Western).
+`mix release rfr` assembles the standalone `rfr` command, and `rfr help` lists what it does.
 
-## CLI (`rfr`)
+## Licence
 
-```
-rfr add <item_id> <t0> <t1> <t2> <t3>          store an item's semantic ID
-rfr add --json                                 bulk add from stdin
-rfr observe <id> <id> [...]                    record a session's transitions
-rfr recommend <id> [...] --checkpoint <dir>    next-item recall (JSON)
-rfr items [--limit N]                          list stored items (JSON)
-rfr blob put|get|list                          content-addressed blob store
-rfr db start                                   run the embedded CockroachDB
-```
-
-Persistence goes through the driven ports; the standalone binary bundles the `cockroach` and
-`versitygw` single binaries per target.
+MIT; see `LICENSE.md`.
