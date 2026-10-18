@@ -43,8 +43,8 @@ defmodule Recommender.Release.BundleStep do
   extracts it, and lands it in the payload's `lib/residual_fsq_recommender-*/priv/versitygw/`
   so `VersitygwLocal.bin/1` finds it at runtime via `:code.priv_dir/1`.
 
-  It used to bundle a cockroach binary beside it. The database is remote now, so there is
-  nothing to ship for it, and a binary per build target stopped being the cost of persistence.
+  The database is SQLite in-process (exqlite), so there is nothing to ship for it. Keeping
+  its pages in FoundationDB needs the host's FoundationDB client and the weftfdb extension.
 
   Only the target being built is bundled.
   """

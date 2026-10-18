@@ -24,9 +24,9 @@ defmodule Recommender.Adapters.CLI do
 
       --data-dir DIR    data directory (default ~/.residual-fsq-recommender)
       --s3-port N       embedded versitygw S3 port (default 7070)
-      --db-url URL      the database to use, for example
-                        postgres://user:pass@host:5432/rfr. Required, or set
-                        RFR_DB_URL. rfr runs no database of its own
+      --db DB           the SQLite database (or set RFR_DB). Default: with
+                        RFR_WEFTFDB_EXTENSION set, file:rfr.v1?vfs=weft_fdb
+                        in FoundationDB; otherwise <data-dir>/rfr.sqlite3
       --checkpoint DIR  npy export dir of trained FuXi-Linear params (recommend)
 
   ## Structure
@@ -35,12 +35,12 @@ defmodule Recommender.Adapters.CLI do
   result and never writes to a device or halts, so it is unit-testable.
   `main/1` is the release entrypoint: it resolves argv (via the `__BURRITO`
   marker when packaged), calls `run/1`, prints, and halts. Persistence goes
-  through the driven ports: `Recommender.Ports.ItemSource` / `ItemSink` (a remote
-  SQL database, connection from `--db-url`) and `Recommender.Ports.BlobSource` /
+  through the driven ports: `Recommender.Ports.ItemSource` / `ItemSink` (SQLite in
+  FoundationDB or a local file, from `--db`) and `Recommender.Ports.BlobSource` /
   `BlobSink` (embedded versitygw + aria-storage adapter).
   """
 
-  alias Recommender.Adapters.RemoteStore, as: Store
+  alias Recommender.Adapters.SqlStore, as: Store
   alias Recommender.Adapters.VersityBlobStore, as: Blob
   alias Recommender.Adapters.{NpyCheckpointSource, Serve}
   alias Recommender.Core.{FuxiLinearInferenceParams, ResidualFSQ}
@@ -107,7 +107,7 @@ defmodule Recommender.Adapters.CLI do
           data_dir: :string,
           port: :integer,
           s3_port: :integer,
-          db_url: :string,
+          db: :string,
           checkpoint: :string,
           top_k: :integer,
           limit: :integer,
@@ -262,7 +262,7 @@ defmodule Recommender.Adapters.CLI do
 
   ## Helpers
 
-  defp store_opts(opts), do: Map.take(opts, [:data_dir, :db_url])
+  defp store_opts(opts), do: Map.take(opts, [:data_dir, :db])
   defp blob_opts(opts), do: Map.take(opts, [:data_dir, :s3_port])
 
   defp normalize({:ok, _} = ok), do: ok
@@ -331,7 +331,7 @@ defmodule Recommender.Adapters.CLI do
     global options:
       --data-dir DIR   data directory (default ~/.residual-fsq-recommender)
       --s3-port N      embedded S3 gateway port (default 7070)
-      --db-url URL     the database to use, or set RFR_DB_URL
+      --db DB          the SQLite database, or set RFR_DB
       --checkpoint DIR npy export of trained FuXi-Linear params (recommend)
     """
     |> String.trim_trailing()

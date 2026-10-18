@@ -27,7 +27,7 @@ defmodule Recommender do
 
   * `Recommender.Adapters.Serve` — wires the FuXi-Linear forward pass + constrained
     decode + catalog into `recommend/3`.
-  * `Recommender.Adapters.RemoteStore` — a remote SQL database, connection from --db-url
+  * `Recommender.Adapters.SqlStore` — SQLite, in FoundationDB (weft_fdb) or a local file, from --db
     (driven; item ports).
   * `Recommender.Adapters.VersityBlobStore` — embedded versity/versitygw S3 gateway
     + aria-storage content-defined chunking (driven; blob ports).
