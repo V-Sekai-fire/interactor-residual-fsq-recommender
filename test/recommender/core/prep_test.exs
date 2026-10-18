@@ -31,7 +31,7 @@ defmodule Recommender.Core.PrepTest do
 
   # The whole real-data flow with the IO stubbed by synthetic 768-d embeddings:
   # Prep.prepare -> stream_batches -> train. Proves the data path end-to-end without
-  # MPNet or CockroachDB. Heavy (full-model train); run with `--include training`.
+  # MPNet or a database. Heavy (full-model train); run with `--include training`.
   @tag :training
   @tag timeout: 600_000
   test "data flow: prepare -> stream_batches -> train stays finite and descends" do

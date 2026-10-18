@@ -1,9 +1,8 @@
 # Cluster wiring (20260610-hexagonal-core-ports-adapters):
 # siblings this component's adapters bind to, message contract only — no shared code.
 #
-# driven / item_source + item_sink  -> https://github.com/V-Sekai/cockroach
-#   (embedded single-node, PostgreSQL wire protocol, bundled per-target by
-#    Recommender.Release.CockroachStep)
+# driven / item_source + item_sink  -> https://github.com/V-Sekai-fire/datasource-store
+#   (SQLite through exqlite; the weftfdb extension keeps its pages in FoundationDB)
 # driven / blob_source + blob_sink  -> https://github.com/versity/versitygw
 #   (embedded S3 gateway over <data-dir>/blobs, bundled per-target)
 # driven / blob chunking            -> https://github.com/V-Sekai-fire/aria-storage

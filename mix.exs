@@ -37,8 +37,8 @@ defmodule Recommender.MixProject do
   # invokes Burrito when a zig toolchain is present (or RFR_BURRITO=1 forces
   # it), so a plain `mix release rfr` still assembles without the toolchain.
   # The BundleStep patch step downloads the matching versitygw single binary
-  # per target and lands it in the payload's priv/versitygw/. It used to carry
-  # a cockroach binary beside it, and the database is remote now.
+  # per target and lands it in the payload's priv/versitygw/. The database is
+  # SQLite in-process, so nothing ships for it.
   defp releases do
     [
       rfr: [
@@ -77,7 +77,7 @@ defmodule Recommender.MixProject do
       {:nimble_csv, "~> 1.2"},
       {:req, "~> 0.5"},
       {:explorer, "~> 0.11"},
-      {:postgrex, "~> 0.19"},
+      {:exqlite, "~> 0.42"},
       # Object-storage host, extracted to its own repo. VersityBlobStore still
       # carries its own lifecycle, and delegating provision and start/stop to
       # this is a follow-up. The database host is gone: it is remote now.
