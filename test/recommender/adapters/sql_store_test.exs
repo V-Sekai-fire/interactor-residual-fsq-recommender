@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 K. S. Ernest (iFire) Lee
 defmodule Recommender.Adapters.SqlStoreTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
 
   alias Recommender.Adapters.SqlStore
 
@@ -9,7 +9,14 @@ defmodule Recommender.Adapters.SqlStoreTest do
     dir = Path.join(System.tmp_dir!(), "rfr-sql-store-#{System.unique_integer([:positive])}")
     File.mkdir_p!(dir)
     on_exit(fn -> File.rm_rf!(dir) end)
-    db = System.get_env("RFR_TEST_DB") || Path.join(dir, "rfr.sqlite3")
+    n = System.unique_integer([:positive])
+
+    # With RFR_WEFTFDB_EXTENSION set, each test gets its own database in FoundationDB.
+    db =
+      if System.get_env("RFR_WEFTFDB_EXTENSION"),
+        do: "file:rfr_test_#{n}.v1?vfs=weft_fdb",
+        else: Path.join(dir, "rfr.sqlite3")
+
     {:ok, opts: %{data_dir: dir, db: db}}
   end
 
